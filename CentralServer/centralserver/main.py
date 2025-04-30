@@ -3,6 +3,7 @@ from fastapi.exception_handlers import http_exception_handler
 from fastapi.middleware.cors import CORSMiddleware
 
 from centralserver import info
+from centralserver.internals.adapters.object_store import get_object_store_handler
 from centralserver.internals.config_handler import app_config
 from centralserver.internals.db_handler import populate_db
 from centralserver.internals.logger import LoggerFactory, log_app_info
@@ -13,7 +14,10 @@ logger = LoggerFactory(
 ).get_logger(__name__)
 
 log_app_info(logger)
-_ = populate_db()
+_ = populate_db()  # Create the database if it doesn't exist
+get_object_store_handler(  # Set up object store if not yet ready
+    app_config.object_store
+).check()
 
 
 app = FastAPI(

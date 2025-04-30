@@ -155,7 +155,6 @@ class UserUpdate(SQLModel):
     nameFirst: str | None = None
     nameMiddle: str | None = None
     nameLast: str | None = None
-    avatarUrn: str | None = None
     password: str | None = None
 
 
@@ -165,3 +164,11 @@ class NewUserRequest(SQLModel):
     username: str
     roleId: int
     password: str
+
+
+class BucketObject(SQLModel):
+    """A model representing an object in a bucket."""
+
+    bucket: str
+    fn: str
+    obj: bytes

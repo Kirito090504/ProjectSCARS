@@ -14,6 +14,12 @@
     "type": "sqlite",
     "config": { "filepath": "./centralserver.db" }
   },
+  "object_store": {
+    "type": "local",
+    "config": {
+      "filepath": "./data/"
+    }
+  },
   "authentication": {
     "signing_secret_key": "UPDATE_THIS_VALUE",
     "refresh_signing_secret_key": "UPDATE_THIS_VALUE",

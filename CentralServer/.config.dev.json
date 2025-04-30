@@ -16,6 +16,12 @@
       "filepath": "./centralserver-dev.db"
     }
   },
+  "object_store": {
+    "type": "local",
+    "config": {
+      "filepath": "./data/"
+    }
+  },
   "authentication": {
     "signing_secret_key": "ad5db1aa6101aadf76c436b334cdb106ea75241d3c6ae5f9efdd673d1ecad48f",
     "refresh_signing_secret_key": "2d5c535a5857a1604ad5ae0c3bd8f106f61cdddd6058f0f0a64cb0b7a341c3a3",

@@ -34,7 +34,7 @@ or a third-party S3-compatible object storage for storing user avatars
 and exported PDFs. It is responsible for handling the backend logic and
 storing the submitted data of canteen managers.
 
-##### Central Server Requirements
+### Central Server Requirements
 
 The hard requirements are as follows:
 
@@ -43,7 +43,7 @@ The hard requirements are as follows:
 - [Docker](https://docker.com/) or [Podman](https://podman.io/)
   - [docker-compose](https://docs.docker.com/compose/) or [podman-compose](https://github.com/containers/podman-compose)
 
-##### Central Server Development Setup
+### Central Server Development Setup
 
 1. Install the [required software](#central-server-requirements).
 2. Clone the repository.
@@ -78,7 +78,10 @@ The hard requirements are as follows:
 6. Select the database you want to use. See [Database Setup](#central-server-database-setup) for more
    information.
 
-7. Run the FastAPI development server.
+7. Select the object store you want to use. See [Object Store Setup](#central-server-object-store-setup)
+   for more information.
+
+8. Run the FastAPI development server.
 
    ```bash
    uv run fastapi dev centralserver --host 0.0.0.0 --port 8081
@@ -90,7 +93,7 @@ The hard requirements are as follows:
 > - username: `scars`
 > - password: `ProjectSCARS1`
 
-###### Central Server Database Setup
+#### Central Server Database Setup
 
 The central server supports the following databases:
 
@@ -109,7 +112,7 @@ and can be used to pass additional SQLAlchemy connection arguments.
   "database": {
     "type": "sqlite",
     "config": {
-      "filepath": "database.db"
+      "filepath": "database.db",
       "connect_args": {
         // SQLAlchemy connection arguments
       }
@@ -135,20 +138,27 @@ high throughput and availability. Therefore, the central server also
 supports MySQL as a database. The MySQL database can be run in a
 containerized environment using Docker or Podman.
 
-1. Adjust the environment variables in
-   `./CentralServer/system/mysql/.env`. For more information
-   about MySQL Docker environment variables, see [their documentation](https://hub.docker.com/_/mysql).
-
-2. Run the MySQL container.
+1. Create a `.env` file in `./CentralServer/system/mysql/` using
+   the example file.
 
    ```bash
    cd ./system/mysql/
+   cp .env.example .env
+   ```
+
+2. Adjust the environment variables in
+   `./CentralServer/system/mysql/.env`. For more information
+   about MySQL Docker environment variables, see [their documentation](https://hub.docker.com/_/mysql).
+
+3. Run the MySQL container.
+
+   ```bash
    docker-compose up -d # Run this if you are using Docker.
    podman-compose up -d # Run this if you are using Podman.
    cd ../..
    ```
 
-3. If successful, you should be able to access PHPMyAdmin at
+4. If successful, you should be able to access PHPMyAdmin at
    `http://localhost:8083`.
 
 > [!IMPORTANT]
@@ -159,7 +169,7 @@ containerized environment using Docker or Podman.
 >
 > `[Note] [Entrypoint]: GENERATED ROOT PASSWORD: bfPy...lqLL`
 
-4. Update `./CentralServer/config.json` to use MySQL. Use the
+5. Update `./CentralServer/config.json` to use MySQL. Use the
    same database credentials as the ones in the
    `.env` file. The `connect_args` property is optional and
    can be used to pass additional SQLAlchemy connection
@@ -179,6 +189,98 @@ containerized environment using Docker or Podman.
          "connect_args": {
            // sqlalchemy connection arguments
          },
+       },
+     },
+     /* ... */
+   }
+   ```
+
+#### Central Server Object Store Setup
+
+The central server supports the following object stores:
+
+- Local file object store (default)
+- MinIO S3-compatible object store
+
+**Local File Object Store**
+
+To start using the local file object store, just edit
+`./CentralServer/config.json` and adjust the `object_store` property to match the following structure:
+
+```jsonc
+{
+  /* ... */
+  "object_store": {
+    "type": "local",
+    "config": {
+      "filepath": "./data/",
+    },
+  },
+  /* ... */
+}
+```
+
+When the central server starts, it will use the provided
+filepath to store the files (objects). Make sure that the
+filepath is writable by the server. The default is `./data/`
+in the root directory of the central server. It is already
+created in the repository, so no further action is needed.
+
+Because the local file object store is implemented in the
+central server itself, it does not provide any integrity
+and redundancy systems. Therefore, it is recommended to
+use a dedicated object store for production use, and
+use the local file object store only for development
+purposes.
+
+**MinIO S3-Compatible Object Store**
+
+Using MinIO, it is possible to provide multiple nodes
+to store the objects. This is useful for redundancy and
+high availability, therefore it is recommended to be used
+in production. The MinIO object store can be run in a
+containerized environment using Docker or Podman.
+
+1. Create a `.env` file in `./CentralServer/system/minio/` using
+   the example file.
+
+   ```bash
+   cd ./system/minio/
+   cp .env.example .env
+   ```
+
+2. Adjust the environment variables in
+   `./CentralServer/system/minio/.env`.
+
+3. Run the MinIO container.
+
+   ```bash
+   docker-compose up -d # Run this if you are using Docker.
+   podman-compose up -d # Run this if you are using Podman.
+   cd ../..
+   ```
+
+4. If successful, you should be able to access the MinIO dashboard at
+   `http://localhost:8084`.
+
+5. Log in to the dashboard using the credentials in the `.env` file.
+
+6. Navigate to the `Access Keys` tab and create a new access key. Make
+   sure to copy the keys, as they will not be shown again.
+
+7. Edit `./CentralServer/config.json` and adjust the `object_store`
+   to match the following structure:
+
+   ```jsonc
+   {
+     /* ... */
+     "object_store": {
+       "type": "minio",
+       "config": {
+         "endpoint": "localhost:9000",
+         "access_key": "YOUR_ACCESS_KEY",
+         "secret_key": "YOUR_SECRET_KEY",
+         "secure": false,
        },
      },
      /* ... */

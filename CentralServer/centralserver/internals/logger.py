@@ -92,7 +92,8 @@ def log_app_info(logger: logging.Logger):
     logger.debug(f"{app_config.logging.log_format=}")
     logger.debug(f"{app_config.logging.date_format=}")
 
-    logger.debug(f"{app_config.database.sqlalchemy_uri=}")
+    logger.debug(f"{app_config.database.info=}")
+    logger.debug(f"{app_config.object_store.info=}")
 
     # Hide the secret key in the logs
     logger.debug(

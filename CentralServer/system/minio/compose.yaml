@@ -1,0 +1,14 @@
+services:
+  centralserver-minio:
+    image: quay.io/minio/minio:RELEASE.2025-04-22T22-12-26Z
+    ports:
+      - "9000:9000"
+      - "8084:8084"
+    volumes:
+      - centralserver-minio_data:/data
+    env_file:
+      - .env
+    command: server /data --console-address ":8084"
+
+volumes:
+  centralserver-minio_data:

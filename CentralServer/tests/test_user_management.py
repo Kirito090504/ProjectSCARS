@@ -854,3 +854,85 @@ def test_force_update_user_info_success():
     resp_data: dict[str, Any] = response.json()
     assert resp_data["username"] == "testuser1"
     assert resp_data["forceUpdateInfo"] is True
+
+
+def test_update_user_avatar():
+    login = _request_access_token(Database.default_user, Database.default_password)
+    headers = {"Authorization": f"Bearer {login.json()['access_token']}"}
+    user_info = client.get(
+        "/api/v1/users/me",
+        headers=headers,
+    ).json()
+
+    with open(
+        "./tests/sample_data/defaultImage.small_512_512_nofilter.jpg", "rb"
+    ) as file:
+        img = file.read()
+
+    response = client.patch(
+        "/api/v1/users/update/avatar",
+        params={"userId": user_info["id"]},
+        files={"img": ("avatar.jpg", img, "image/jpeg")},
+        headers=headers,
+    )
+    assert response.status_code == 200
+    resp_data = response.json()
+    assert resp_data["avatarUrn"] is not None
+
+
+def test_get_user_avatar():
+    login = _request_access_token(Database.default_user, Database.default_password)
+    headers = {"Authorization": f"Bearer {login.json()['access_token']}"}
+    user_info = client.get(
+        "/api/v1/users/me",
+        headers=headers,
+    ).json()
+
+    with open(
+        "./tests/sample_data/defaultImage.small_512_512_nofilter.jpg", "rb"
+    ) as file:
+        img = file.read()
+
+    response = client.get(
+        f"/api/v1/users/avatar/{user_info["avatarUrn"]}",
+        headers=headers,
+    )
+    assert response.status_code == 200
+    assert response.content == img
+
+
+def test_delete_user_avatar():
+    login = _request_access_token(Database.default_user, Database.default_password)
+    headers = {"Authorization": f"Bearer {login.json()['access_token']}"}
+    user_info = client.get(
+        "/api/v1/users/me",
+        headers=headers,
+    ).json()
+
+    response = client.delete(
+        "/api/v1/users/update/avatar",
+        params={"userId": user_info["id"]},
+        headers=headers,
+    )
+    assert response.status_code == 200
+    assert response.json()["avatarUrn"] is None
+
+
+def test_delete_user_avatar_no_current():
+    login = _request_access_token(Database.default_user, Database.default_password)
+    headers = {"Authorization": f"Bearer {login.json()['access_token']}"}
+
+    login2 = _request_access_token("testuser1", "Password123")
+    headers2 = {"Authorization": f"Bearer {login2.json()['access_token']}"}
+    user_info2 = client.get(
+        "/api/v1/users/me",
+        headers=headers2,
+    ).json()
+
+    response = client.delete(
+        "/api/v1/users/update/avatar",
+        params={"userId": user_info2["id"]},
+        headers=headers,
+    )
+    assert response.status_code == 400
+    assert response.json()["detail"] == "User does not have an avatar set."
