@@ -34,6 +34,7 @@
         "dayjs": "^1.11.13",
         "embla-carousel": "^8.6.0",
         "embla-carousel-react": "^8.6.0",
+        "framer-motion": "^12.19.1",
         "ky": "^1.8.1",
         "mantine-data-grid": "^0.2.3",
         "motion": "^12.19.1",

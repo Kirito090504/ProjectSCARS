@@ -79,7 +79,7 @@ export default function RootLayout({ children }: RootLayoutProps) {
                         zIndex: -1,
                         width: "100vw",
                         height: "100vh",
-                        pointerEvents: "none", // so it doesn't block clicks
+                        pointerEvents: "none",
                     }}
                     aria-hidden="true"
                 >

@@ -3,7 +3,7 @@ import { IconChartBar, IconServer, IconShield } from "@tabler/icons-react";
 import { motion } from "framer-motion";
 import { memo } from "react";
 
-import SpotlightCard from "../ReactBits/SpotlightCard";
+import Carousel from "../ReactBits/Carousel";
 
 const FeatureCard = memo(
     ({ icon: Icon, title, description }: { icon: typeof IconServer; title: string; description: string }) => (
@@ -93,9 +93,16 @@ export const HomeSection = memo(() => {
                 ))}
             </SimpleGrid>
 
-            <SpotlightCard className="custom-spotlight-card" spotlightColor="rgba(0, 229, 255, 0.2)">
-                {/* Spotlight Card Content */}
-            </SpotlightCard>
+            <div style={{ height: "600px", position: "relative" }}>
+                <Carousel
+                    baseWidth={300}
+                    autoplay={true}
+                    autoplayDelay={3000}
+                    pauseOnHover={true}
+                    loop={true}
+                    round={false}
+                />
+            </div>
         </Container>
     );
 });
