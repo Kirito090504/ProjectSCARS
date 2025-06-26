@@ -39,6 +39,7 @@
         "motion": "^12.19.1",
         "next": "15.3.4",
         "next-qrcode": "^2.5.1",
+        "ogl": "^1.0.11",
         "react": "^19.0.0",
         "react-dom": "^19.0.0",
         "react-easy-crop": "^5.4.2",

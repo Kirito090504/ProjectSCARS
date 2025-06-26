@@ -3,6 +3,8 @@ import { IconChartBar, IconServer, IconShield } from "@tabler/icons-react";
 import { motion } from "framer-motion";
 import { memo } from "react";
 
+import SpotlightCard from "../ReactBits/SpotlightCard";
+
 const FeatureCard = memo(
     ({ icon: Icon, title, description }: { icon: typeof IconServer; title: string; description: string }) => (
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}>
@@ -90,6 +92,10 @@ export const HomeSection = memo(() => {
                     />
                 ))}
             </SimpleGrid>
+
+            <SpotlightCard className="custom-spotlight-card" spotlightColor="rgba(0, 229, 255, 0.2)">
+                {/* Spotlight Card Content */}
+            </SpotlightCard>
         </Container>
     );
 });

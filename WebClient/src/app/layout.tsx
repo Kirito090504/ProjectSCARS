@@ -1,5 +1,6 @@
 // NOTE: react-scan must be the top-most import
 import { ReactScan } from "@/components/dev/ReactScan";
+import Aurora from "@/components/ReactBits/Aurora";
 
 import { Program } from "@/lib/info";
 import { theme } from "@/lib/theme";
@@ -70,7 +71,20 @@ export default function RootLayout({ children }: RootLayoutProps) {
                 />
                 <ColorSchemeScript />
             </head>
-            <body>
+            <body style={{ position: "relative", minHeight: "100vh", overflowX: "hidden" }}>
+                <div
+                    style={{
+                        position: "fixed",
+                        inset: 0,
+                        zIndex: -1,
+                        width: "100vw",
+                        height: "100vh",
+                        pointerEvents: "none", // so it doesn't block clicks
+                    }}
+                    aria-hidden="true"
+                >
+                    <Aurora colorStops={["#3A29FF", "#FF94B4", "#FF3232"]} blend={0.5} amplitude={1.0} speed={0.5} />
+                </div>
                 <ReactScan />
                 <MantineProvider theme={theme} defaultColorScheme="auto">
                     {children}
